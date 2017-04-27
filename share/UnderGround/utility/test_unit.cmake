@@ -28,11 +28,11 @@ function ( ug_test_unit
     dep_units 
 )
     ug_test_unit2(
-        ${uname} 
+        "${uname}" 
         "unit_test/${PROJECT_NAME}/${uname}_test.cpp"
-        ${include_dirs} 
-        ${lnk_lib} 
-        ${dep_units} 
+        "${include_dirs}" 
+        "${lnk_lib}" 
+        "${dep_units}"  
     )
 endfunction()
 
