@@ -1,0 +1,8 @@
+find_package( GTest REQUIRED )
+if( ${GTEST_FOUND} )
+    add_custom_target(GTEST_CONFIG)
+endif()
+show_var ( GTEST_INCLUDE_DIRS   )
+show_var ( GTEST_LIBRARIES      )
+show_var ( GTEST_BOTH_LIBRARIES )
+show_var ( GTEST_MAIN_LIBRARIES )

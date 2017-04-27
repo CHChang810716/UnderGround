@@ -1,0 +1,6 @@
+macro( unknow_variable_exception var )
+    message ( FATAL_ERROR "unknown ${var} : ${${var}}, configure abort" ) 
+endmacro()
+macro( show_var var )
+    message ( STATUS "${var} : ${${var}}" )
+endmacro()
