@@ -1,4 +1,4 @@
-include ( ${CSDK_CMAKE_DIR}/arch.cmake )
+include ( ${UNDER_GROUND_CMAKE_DIR}/arch.cmake )
 config_arch()
 show_var( SYS_MARCH )
 if ( NOT EXISTS "${CMAKE_BINARY_DIR}/ENV_PRE_BUILD-done")
