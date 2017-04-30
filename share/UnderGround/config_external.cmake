@@ -1,8 +1,7 @@
 include( ${UNDER_GROUND_CMAKE_DIR}/cmake_gen.cmake )
-set ( DEFAULT_EP_INSTALL_PATH ${CMAKE_SOURCE_DIR}/stage )
 set ( DEFAULT_BUILD_SHARED ON )
-set ( CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 set ( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:$ORIGIN/../lib" )
+set ( CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 # set ( EP_BUILD_IN_PROJECT ON )
 # set ( git_protocol "git")
 
@@ -17,5 +16,8 @@ macro( ep_option_fset OPNAME VAL )
     endif()
     set ( ${OPNAME} ${VAL} )
 endmacro()
+ep_option ( DEFAULT_EP_INSTALL_PATH "${CMAKE_SOURCE_DIR}/stage" )
 ep_option ( DEFAULT_EP_SRC "PRE_BUILD" ) # other option SYSTEM/REMOTE_SOURCE
+include ( ${UNDER_GROUND_CMAKE_DIR}/arch.cmake )
+config_arch()
         

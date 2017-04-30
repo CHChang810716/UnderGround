@@ -1,10 +1,20 @@
 message( "ExteralProject - GTEST" )
 ep_option( GTEST_EP_SRC       ${DEFAULT_EP_SRC} )
 if      ( ${GTEST_EP_SRC} STREQUAL "PRE_BUILD" )
-    ep_option_fset( GTEST_INSTALL_PATH ${CMAKE_INSTALL_PREFIX} )
+    ep_option( GTEST_INSTALL_PATH ${DEFAULT_EP_INSTALL_PATH} )
     ep_option_fset( GTEST_BUILD_SHARED OFF )
     set( GTEST_ROOT ${GTEST_INSTALL_PATH} )
-    add_custom_target( GTEST_BUILD )
+    add_custom_target( GTEST_BUILD ALL
+        ${CMAKE_COMMAND} 
+            -DFILE_TO_CHECK="${CMAKE_BINARY_DIR}/GTEST/pre-build-done"
+            -DPREBUILD_NAME="GTEST"
+            -DPREBUILD_DIR="${UNDER_GROUND_PREBUILD}/gtest"
+            -DDES_DIR=${GTEST_INSTALL_PATH}
+            -DSYS_MARCH=${SYS_MARCH}
+            -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}
+            -DCMAKE_CXX_COMPILER_ID=${CMAKE_CXX_COMPILER_ID}
+            -P ${UNDER_GROUND_CMAKE_DIR}/install_prebuild.cmake
+    )
 elseif ( ${GTEST_EP_SRC} STREQUAL "SYSTEM" )
     find_package( GTEST REQUIRED )
     if ( ${GTEST_FOUND} )
