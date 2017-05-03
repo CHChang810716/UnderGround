@@ -2,10 +2,20 @@ message( "ExteralProject - Boost" )
 ep_option( BOOST_EP_SRC       ${DEFAULT_EP_SRC} )
 show_var( BOOST_EP_SRC )
 if      ( ${BOOST_EP_SRC} STREQUAL "PRE_BUILD" )
-    ep_option_fset( BOOST_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}" ) 
+    ep_option( BOOST_INSTALL_PATH ${DEFAULT_EP_INSTALL_PATH} ) 
     ep_option_fset( BOOST_BUILD_SHARED "(deprecated)" )
     set( BOOST_ROOT ${BOOST_INSTALL_PATH} )
-    add_custom_target( BOOST_BUILD )
+    add_custom_target( BOOST_BUILD ALL
+        ${CMAKE_COMMAND} 
+            -DFILE_TO_CHECK="${CMAKE_BINARY_DIR}/BOOST/pre-build-done"
+            -DPREBUILD_NAME="BOOST"
+            -DPREBUILD_DIR="${UNDER_GROUND_PREBUILD}/boost1_63"
+            -DDES_DIR=${BOOST_INSTALL_PATH}
+            -DSYS_MARCH=${SYS_MARCH}
+            -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}
+            -DCMAKE_CXX_COMPILER_ID=${CMAKE_CXX_COMPILER_ID}
+            -P ${UNDER_GROUND_CMAKE_DIR}/install_prebuild.cmake
+    )
 elseif ( ${BOOST_EP_SRC} STREQUAL "SYSTEM" )
     find_boost()
     ep_option_fset( BOOST_INSTALL_PATH ${BOOST_ROOT} )
@@ -23,8 +33,8 @@ elseif ( ${BOOST_EP_SRC} STREQUAL "REMOTE_SOURCE" )
     else()
         if( WIN32 )
             if(${CMAKE_GENERATOR} MATCHES "MinGW" )
-                set(boost_b2_args toolset=gcc define=_hypot=hypot define=HAVE_SNPRINTF=1)
-                set(boost_bootstrap_args --with-toolset=gcc)
+                set(boost_b2_args toolset=gcc define=_hypot=hypot define=HAVE_SNPRINTF=1 link=shared)
+                set(boost_bootstrap_args gcc)
             endif()
             set( Boost_Bootstrap_Command cd ${CMAKE_BINARY_DIR}/BOOST/source && bootstrap.bat ${boost_bootstrap_args} && cd ${CMAKE_BINARY_DIR} )
             set( Boost_b2_Command b2.exe ${boost_b2_args} )
@@ -40,14 +50,13 @@ elseif ( ${BOOST_EP_SRC} STREQUAL "REMOTE_SOURCE" )
         URL ${Boost_URL}
         UPDATE_COMMAND ""
         PATCH_COMMAND ${CMAKE_COMMAND} -E copy 
-            ${CMAKE_SOURCE_DIR}/lib/boost/python3.5/user-config.jam 
+            ${UNDER_GROUND_CMAKE_DIR}/boost/python3.5/user-config.jam 
             ${CMAKE_BINARY_DIR}/BOOST/source/tools/build/src/
         CONFIGURE_COMMAND ${Boost_Bootstrap_Command}
         BUILD_COMMAND  cd ${CMAKE_BINARY_DIR}/BOOST/source &&
             ${Boost_b2_Command} install
             --debug-configuration
             --prefix=${BOOST_INSTALL_PATH}
-            --link=shared
             -j2 && 
             cd ${CMAKE_BINARY_DIR}
     INSTALL_COMMAND ""
@@ -57,12 +66,11 @@ elseif ( ${BOOST_EP_SRC} STREQUAL "REMOTE_SOURCE" )
         DEPENDEES install
         COMMAND ${Boost_b2_Command} --clean &&
         ${CMAKE_COMMAND} -E copy 
-            ${CMAKE_SOURCE_DIR}/lib/boost/python2.7/user-config.jam
+            ${UNDER_GROUND_CMAKE_DIR}/boost/python2.7/user-config.jam 
         ${CMAKE_BINARY_DIR}/BOOST/source/tools/build/src/ &&
             ${Boost_b2_Command} install
                 --debug-configuration
                 --prefix=${BOOST_INSTALL_PATH}
-                --link=shared
                 --with-python
                 -j2 
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/BOOST/source
