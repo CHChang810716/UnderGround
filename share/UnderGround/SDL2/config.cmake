@@ -1,5 +1,5 @@
 find_package( sdl2 CONFIG REQUIRED )
-if( ${SDL2_FOUND} ) cmake config not support this variable
+if( ${SDL2_FOUND} )
     add_custom_target(SDL2_CONFIG)
 endif()
 show_var ( SDL2_INCLUDE_DIRS   )
