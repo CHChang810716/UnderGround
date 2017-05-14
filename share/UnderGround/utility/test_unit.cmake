@@ -36,3 +36,34 @@ function ( ug_test_unit
     )
 endfunction()
 
+macro( path_to_module module_name path_str )
+    string( REPLACE "/" "-" ${module_name} ${path_str})
+    string( REPLACE ".cpp" "" ${module_name} ${${module_name}})
+    set( ${module_name} ${${module_name}}_test )
+endmacro()
+function ( ug_module_test_unit 
+    output_module_name
+    uname 
+    include_dirs 
+    lnk_lib 
+    dep_units 
+)
+    path_to_module( module_name ${uname} )
+    message(STATUS "configure test module : ${module_name}")
+    add_executable( 
+        ${module_name}
+        ${CMAKE_SOURCE_DIR}/unit_test/${uname}
+    )
+    ug_custom_type_unit( 
+        "${module_name}"
+        "${include_dirs}" 
+        "${lnk_lib}" 
+        "${dep_units}" 
+    )
+    add_test( 
+        ${module_name}
+        ${EXECUTABLE_OUTPUT_PATH}/${module_name} 
+    )
+    set(${output_module_name} ${module_name} PARENT_SCOPE)
+endfunction()
+
