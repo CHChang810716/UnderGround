@@ -17,10 +17,21 @@ if      ( ${BOOST_EP_SRC} STREQUAL "PRE_BUILD" )
             -P ${UNDER_GROUND_CMAKE_DIR}/install_prebuild.cmake
     )
 elseif ( ${BOOST_EP_SRC} STREQUAL "SYSTEM" )
-    find_boost()
-    ep_option_fset( BOOST_INSTALL_PATH ${BOOST_ROOT} )
+    find_package( Boost REQUIRED COMPONENTS 
+        date_time 
+        program_options 
+        filesystem 
+        system 
+        serialization 
+        regex 
+        thread 
+        iostreams 
+    )
+    ep_option_fset( BOOST_INSTALL_PATH "(deprecated)")
     ep_option_fset( BOOST_BUILD_SHARED "(deprecated)" )
-    add_custom_target( BOOST_BUILD )
+    if ( ${Boost_FOUND} )
+        add_custom_target( BOOST_BUILD )
+    endif()
 elseif ( ${BOOST_EP_SRC} STREQUAL "REMOTE_SOURCE" )
     ep_option( BOOST_INSTALL_PATH ${DEFAULT_EP_INSTALL_PATH} )
     ep_option( BOOST_BUILD_SHARED ${DEFAULT_BUILD_SHARED} )
